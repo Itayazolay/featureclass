@@ -1,6 +1,6 @@
 """Backport of cached_property from python 3.8+ to 3.7"""
 try:
-    from functools import cached_property
+    from functools import cached_property  # type: ignore
 except ImportError:
     from threading import RLock
     _NOT_FOUND = object()
