@@ -1,9 +1,11 @@
 from __future__ import annotations
 import inspect
 from typing import Tuple, Optional, Generic, Type, TypeVar, Callable, Union, get_type_hints, cast, Mapping, Any
-from functools import lru_cache, update_wrapper
+from functools import lru_cache, update_wrapper, singledispatch
 from collections import Mapping
 from featureclass.cached_property import cached_property
+from dataclasses import make_dataclass
+from abc import ABC
 
 
 _raise_error = object()
@@ -12,6 +14,8 @@ cache = lru_cache(maxsize=1)
 
 T = TypeVar("T")
 
+class FeatureClass(ABC):
+    __features__: Tuple[Feature, ...]
 
 def featureclass(cls: Type[T]) -> Type[T]:
     def is_feature(prop) -> bool:
@@ -27,6 +31,22 @@ def feature_annotations(cls_or_obj) -> Mapping[str, Type[Any]]:
 
 def feature_names(cls_or_obj) -> Tuple[str, ...]:
     return tuple(f.name for f in cls_or_obj.__features__)
+
+def asDict(obj) -> Mapping[str, Any]:
+    return {k: getattr(obj, k) for k in feature_names(obj)}
+
+def asDataclass(cls_or_obj: Type[T]) -> Union[Type[T], T]:
+    
+    def _make(cls): 
+        return make_dataclass(
+            cls.__name__, 
+            fields=[(feature.name, feature.type) for feature in cls.__features__]
+        )
+    if inspect.isclass(cls_or_obj):
+        return cast(Type[T], _make(cls_or_obj))
+    else:
+        cls = cls_or_obj.__class__
+        return  _make(cls)(**asDict(cls_or_obj))
 
 
 class Feature(Generic[T], cached_property):

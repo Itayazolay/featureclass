@@ -1,6 +1,8 @@
-from featureclass import featureclass, feature_names, feature, feature_annotations
+from featureclass import featureclass, feature_names, feature, feature_annotations, asDict, asDataclass
 import unittest
 import time
+
+from dataclasses import fields
 
 class TestBasic(unittest.TestCase):
     def setUp(self) -> None:
@@ -52,6 +54,21 @@ class TestBasic(unittest.TestCase):
         self.assertEqual(a.inc, 1)
         self.assertEqual(b.inc, 1)
 
+    def test_asDict(self):
+        a = self.feature_cls()
+        d = asDict(a)
+        self.assertSetEqual(set(feature_names(a)), set(d.keys()))
+        self.assertEqual(d['inc'], 1)
+    
+    def test_asDataclass(self):
+        a = self.feature_cls()
+        dc = asDataclass(a)
+        
+        self.assertSetEqual(set(f.name for f in  fields(dc)), set(feature_names(a)))
+        self.assertDictEqual(feature_annotations(a), {f.name: f.type for f in fields(dc)})
+        self.assertSetEqual(set(f.name for f in  fields(dc)), set(feature_names(self.feature_cls)))
+        self.assertDictEqual(feature_annotations(self.feature_cls), {f.name: f.type for f in fields(dc)})
+        
 
 if __name__ == "__main__":
     unittest.main()

@@ -32,7 +32,7 @@ Some things were missing for me from this type of implementation:
 This is why I created this library.  
 I turned the above code into this:  
 ```python
-from featureclass import feature, featureclass, feature_names, feature_annotations
+from featureclass import feature, featureclass, feature_names, feature_annotations, asDict, asDataclass
 from statistics import variance
 from math import sqrt
 
@@ -53,6 +53,9 @@ class MyFeatures:
 
 print(feature_names(MyFeatures)) # ('var', 'stdev')
 print(feature_annotations(MyFeatures)) # {'var': float, 'stdev': float}
+print(asDict(MyFeatures([1,2,3,4,5]))) # {'var': 2.5, 'stdev': 1.5811388300841898}
+print(asDataclass(MyFeatures([1,2,3,4,5]))) # MyFeatures(stdev=1.5811388300841898, var=2.5)
+
 ```
 
 The feature decorator is using cached_property to cache the feature calculation,   
