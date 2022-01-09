@@ -1,7 +1,6 @@
 from __future__ import annotations
 import inspect
 from typing import Tuple, Optional, Generic, Type, TypeVar, Callable, Union, get_type_hints, cast, Mapping, Any
-from typing_extensions import Protocol
 from functools import lru_cache, update_wrapper
 from collections import Mapping
 from featureclass.cached_property import cached_property
@@ -12,10 +11,6 @@ cache = lru_cache(maxsize=1)
 
 
 T = TypeVar("T")
-
-
-class FeatureClass(Protocol):
-    __features__: Tuple[Feature, ...]
 
 
 def featureclass(cls: Type[T]) -> Type[T]:
