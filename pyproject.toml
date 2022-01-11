@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "featureclass"
-version = "0.2.0"
+version = "0.2.1"
 description = "Feature engineering library that helps you keep track of feature dependencies, documentation and schema"
 authors = ["Itay Azolay <itayazolay@gmail.com>"]
 license = "Apache-2.0"
