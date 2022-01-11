@@ -32,10 +32,10 @@ jobs:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 --max-line-length=120 .
+        python -m flake8 --max-line-length=120 .
     - name: typecheck
       run: |
-        mypy . 
+        python -m mypy . 
     - name: Run unittest
       run: |
         python -m unittest discover tests
