@@ -80,7 +80,7 @@ def asDataclass(cls_or_obj: Union[Type[T], T], deepcopy: bool = False) -> Union[
     else:
         cls = cast(Type[T], cls_or_obj.__class__)
 
-        return _make(cls)(**asDict(cls_or_obj, deepcopy=deepcopy))  # type: ignore
+        return _make(cls)(**asDict(cls_or_obj, deepcopy=deepcopy))  # type: ignore[call-arg]
 
 
 class Feature(Generic[T], cached_property):  # type: ignore
