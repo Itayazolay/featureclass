@@ -35,3 +35,4 @@ line-length = 120
 
 [tool.mypy]
 strict = true
+show_error_codes = true

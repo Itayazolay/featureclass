@@ -6,7 +6,7 @@ from dataclasses import make_dataclass
 from functools import update_wrapper
 from typing import Any, Callable, Generic, Mapping, Optional, Tuple, Type, TypeVar, Union, cast, get_type_hints
 
-from featureclass.cached_property import cached_property  # type: ignore
+from featureclass.cached_property import cached_property  # type: ignore[attr-defined]
 
 T = TypeVar("T")
 
@@ -69,7 +69,7 @@ def asDataclass(cls_or_obj: Union[Type[T], T], deepcopy: bool = False) -> Union[
         raise TypeError("class or object is not a featureclass")
 
     def _make(cls: Type[T]) -> Type[T]:
-        features = cls.__features__  # type: ignore
+        features = cls.__features__  # type: ignore[attr-defined]
         return make_dataclass(
             cls.__name__,
             fields=[(feature.name, feature.type) for feature in features],
@@ -80,10 +80,10 @@ def asDataclass(cls_or_obj: Union[Type[T], T], deepcopy: bool = False) -> Union[
     else:
         cls = cast(Type[T], cls_or_obj.__class__)
 
-        return _make(cls)(**asDict(cls_or_obj, deepcopy=deepcopy))  # type: ignore
+        return _make(cls)(**asDict(cls_or_obj, deepcopy=deepcopy))  # type: ignore[call-arg]
 
 
-class Feature(Generic[T], cached_property):  # type: ignore
+class Feature(Generic[T], cached_property):  # type: ignore[misc]
     name: str
 
     def __init__(self, f: Callable[..., T], *, name: Optional[str] = None, on_error: ON_ERROR = _raise_error) -> None:
@@ -93,7 +93,7 @@ class Feature(Generic[T], cached_property):  # type: ignore
         self.name = name or f.__name__
         self.on_error = on_error
 
-    def __get__(self, instance, owner=None) -> T:  # type: ignore
+    def __get__(self, instance, owner=None) -> T:  # type: ignore[no-untyped-def]
         try:
             return cast(T, super().__get__(instance, owner))
         except Exception as err:
