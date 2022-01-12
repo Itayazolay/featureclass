@@ -1,5 +1,15 @@
 # featureclass
+
 Feature engineering library that helps you keep track of feature dependencies, documentation and schema  
+
+# Installation 
+Using pip
+
+```bash
+pip install featureclass
+```
+
+# Motivation
 
 This library helps define a featureclass.  
 featureclass is inspired by dataclass, and is meant to provide alternative way to define features engineering classes.  
@@ -28,6 +38,7 @@ Some things were missing for me from this type of implementation:
 2. No simple schema  
 3. No documentation for features  
 4. Duplicate declaration of the same feature - once as a function and one as a dict key  
+
 
 This is why I created this library.  
 I turned the above code into this:  
@@ -59,3 +70,4 @@ print(asDataclass(MyFeatures([1,2,3,4,5]))) # MyFeatures(stdev=1.581138830084189
 
 The feature decorator is using cached_property to cache the feature calculation,   
 making sure that each feature is calculated once per datapoint
+
