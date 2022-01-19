@@ -1,37 +1,73 @@
-## Welcome to GitHub Pages
+# featureclass
 
-You can use the [editor on GitHub](https://github.com/Itayazolay/featureclass/edit/main/docs/index.md) to maintain and preview the content for your website in Markdown files.
+Feature engineering library that helps you keep track of feature dependencies, documentation and schema  
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+# Installation 
+Using pip
 
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+```bash
+pip install featureclass
 ```
 
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
+# Motivation
 
-### Jekyll Themes
+This library helps define a featureclass.  
+featureclass is inspired by dataclass, and is meant to provide alternative way to define features engineering classes.  
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/Itayazolay/featureclass/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+I have noticed that the below code is pretty common when doing feature engineering:  
 
-### Support or Contact
+```python
+from statistics import variance
+from math import sqrt
+class MyFeatures:
+    def calc_all(self, datapoint):
+        out = {}
+        out['var'] = self.calc_var(datapoint),
+        out['stdev'] = self.calc_std(out['var'])
+        return out
+        
+    def calc_var(self, data) -> float:
+        return variance(data)
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+    def calc_stdev(self, var) -> float:
+        return sqrt(var)
+```
+
+Some things were missing for me from this type of implementation:  
+1. Implicit dependencies between features  
+2. No simple schema  
+3. No documentation for features  
+4. Duplicate declaration of the same feature - once as a function and one as a dict key  
+
+
+This is why I created this library.  
+I turned the above code into this:  
+```python
+from featureclass import feature, featureclass, feature_names, feature_annotations, asdict, as_dataclass
+from statistics import variance
+from math import sqrt
+
+@featureclass
+class MyFeatures:
+    def __init__(self, datapoint):
+        self.datapoint = datapoint
+    
+    @feature()
+    def var(self) -> float:
+        """Calc variance"""
+        return variance(self.datapoint)
+
+    @feature()
+    def stdev(self) -> float:
+        """Calc stdev"""
+        return sqrt(self.var)
+
+print(feature_names(MyFeatures)) # ('var', 'stdev')
+print(feature_annotations(MyFeatures)) # {'var': float, 'stdev': float}
+print(asdict(MyFeatures([1,2,3,4,5]))) # {'var': 2.5, 'stdev': 1.5811388300841898}
+print(as_dataclass(MyFeatures([1,2,3,4,5]))) # MyFeatures(stdev=1.5811388300841898, var=2.5)
+```
+
+The feature decorator is using cached_property to cache the feature calculation,   
+making sure that each feature is calculated once per datapoint
+

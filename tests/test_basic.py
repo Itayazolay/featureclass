@@ -1,8 +1,8 @@
 import time
 import unittest
-from dataclasses import fields
+from dataclasses import fields, is_dataclass
 
-from featureclass import asDataclass, asDict, feature, feature_annotations, feature_names, featureclass
+from featureclass import as_dataclass, asdict, feature, feature_annotations, feature_names, featureclass
 
 
 @featureclass
@@ -81,21 +81,22 @@ class TestBasic(unittest.TestCase):
         self.assertEqual(a.inc, 1)
         self.assertEqual(b.inc, 1)
 
-    def test_asDict(self) -> None:
+    def test_asdict(self) -> None:
         a = self.inst
-        d = asDict(a)
+        d = asdict(a)
         self.assertSetEqual(set(feature_names(a)), set(d.keys()))
         self.assertEqual(d["inc"], 1)
 
-    def test_asDataclass(self) -> None:
+    def test_as_dataclass(self) -> None:
         a = self.inst
-        dc = asDataclass(a)
+        dc = as_dataclass(a)
+        self.assertTrue(is_dataclass(dc))
         self.assertSetEqual(set(f.name for f in fields(dc)), set(feature_names(a)))
         self.assertDictEqual({f.name: f.type for f in fields(dc)}, feature_annotations(a))
 
         b = self.cls
-        dc = asDataclass(b)
-
+        dc = as_dataclass(b)
+        self.assertTrue(is_dataclass(dc))
         self.assertSetEqual(set(f.name for f in fields(dc)), set(feature_names(b)))
         self.assertDictEqual({f.name: f.type for f in fields(dc)}, feature_annotations(b))
 

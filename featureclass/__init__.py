@@ -1,3 +1,3 @@
-from featureclass.core import asDataclass, asDict, feature, feature_annotations, feature_names, featureclass
+from featureclass.core import as_dataclass, asdict, feature, feature_annotations, feature_names, featureclass
 
-__all__ = ["featureclass", "feature", "feature_names", "feature_annotations", "asDict", "asDataclass"]
+__all__ = ["featureclass", "feature", "feature_names", "feature_annotations", "asdict", "as_dataclass"]
