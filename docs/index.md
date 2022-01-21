@@ -8,7 +8,7 @@ Using pip
 ```bash
 pip install featureclass
 ```
-
+For [quickstart click here](quickstart.md)
 # Motivation
 
 This library helps define a featureclass.  
@@ -70,4 +70,3 @@ print(as_dataclass(MyFeatures([1,2,3,4,5]))) # MyFeatures(stdev=1.58113883008418
 
 The feature decorator is using cached_property to cache the feature calculation,   
 making sure that each feature is calculated once per datapoint
-
